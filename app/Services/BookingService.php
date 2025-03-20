@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Booking;
 use App\Models\Room;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class BookingService extends BaseService
@@ -14,6 +15,11 @@ class BookingService extends BaseService
         $this->model = new Booking();
     }
 
+    public function getAll(): Collection
+    {
+        return $this->model::all();
+    }
+
     public function createBooking(array $data): Booking
     {
         return DB::transaction(function () use ($data) {
@@ -21,21 +27,8 @@ class BookingService extends BaseService
             $startTime = CarbonImmutable::parse($data['start_time']);
             $endTime = CarbonImmutable::parse($data['end_time']);
 
-            $conflictExists = Booking::query()
-                ->where('room_id', $room->id)
-                ->where('status', '!=', 'canceled')
-                ->where(function ($query) use ($startTime, $endTime) {
-                    $query->whereBetween('start_time', [$startTime, $endTime])
-                        ->orWhereBetween('end_time', [$startTime, $endTime])
-                        ->orWhere(function ($query) use ($startTime, $endTime) {
-                            $query->where('start_time', '<=', $startTime)
-                                ->where('end_time', '>=', $endTime);
-                        });
-                })
-                ->exists();
-
-            if ($conflictExists) {
-                throw new \Exception('Комната уже забронирована на это время.');
+            if ($this->hasBookingConflict($room->id, $startTime, $endTime)) {
+                throw new \Exception('The room is already booked at this time.');
             }
 
             $hours = $startTime->diffInHours($endTime);
@@ -60,21 +53,7 @@ class BookingService extends BaseService
             $startTime = CarbonImmutable::parse($data['start_time']);
             $endTime = CarbonImmutable::parse($data['end_time']);
 
-            $conflictExists = Booking::query()
-                ->where('room_id', $booking->room_id)
-                ->where('status', '!=', 'canceled')
-                ->where('id', '!=', $booking->id)
-                ->where(function ($query) use ($startTime, $endTime) {
-                    $query->whereBetween('start_time', [$startTime, $endTime])
-                        ->orWhereBetween('end_time', [$startTime, $endTime])
-                        ->orWhere(function ($query) use ($startTime, $endTime) {
-                            $query->where('start_time', '<=', $startTime)
-                                ->where('end_time', '>=', $endTime);
-                        });
-                })
-                ->exists();
-
-            if ($conflictExists) {
+            if ($this->hasBookingConflict($booking->room_id, $startTime, $endTime, $booking->id)) {
                 throw new \Exception('The new time overlaps with existing bookings.');
             }
 
@@ -94,5 +73,25 @@ class BookingService extends BaseService
 
             return $booking->fresh();
         });
+    }
+
+    private function hasBookingConflict(int $roomId, CarbonImmutable $startTime, CarbonImmutable $endTime, ?int $excludeBookingId = null): bool
+    {
+        $query = Booking::query()
+            ->where('room_id', $roomId)
+            ->where('status', '!=', 'canceled');
+
+        if ($excludeBookingId) {
+            $query->where('id', '!=', $excludeBookingId);
+        }
+
+        return $query->where(function ($query) use ($startTime, $endTime) {
+            $query->whereBetween('start_time', [$startTime, $endTime])
+                ->orWhereBetween('end_time', [$startTime, $endTime])
+                ->orWhere(function ($query) use ($startTime, $endTime) {
+                    $query->where('start_time', '<=', $startTime)
+                        ->where('end_time', '>=', $endTime);
+                });
+        })->exists();
     }
 }

@@ -66,8 +66,10 @@ class BookingController extends Controller
     {
         try {
             $this->bookingService->updateBooking($booking, $request->validated());
+
             return redirect()->route('bookings.index')->with('success', 'Booking has been successfully updated.');
         } catch (\Exception $e) {
+
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
