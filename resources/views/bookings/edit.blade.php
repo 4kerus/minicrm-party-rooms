@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Редактировать бронирование</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit booking</h2>
     </x-slot>
 
     <div class="py-12">
@@ -14,7 +14,7 @@
                         @csrf
                         @method('PUT')
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Время начала</label>
+                            <label class="block text-sm font-medium text-gray-700">Start time</label>
                             <input type="datetime-local" name="start_time"
                                    value="{{ old('start_time', $booking->start_time->format('Y-m-d\TH:i')) }}"
                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm @error('start_time') border-red-300 @enderror">
@@ -23,7 +23,7 @@
                             @enderror
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Время окончания</label>
+                            <label class="block text-sm font-medium text-gray-700">End time</label>
                             <input type="datetime-local" name="end_time"
                                    value="{{ old('end_time', $booking->end_time->format('Y-m-d\TH:i')) }}"
                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm @error('end_time') border-red-300 @enderror">
@@ -31,11 +31,22 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm @error('status') border-red-300 @enderror">
+                                <option value="pending" {{ old('status', $booking->status) == 'pending' ? 'selected' : '' }}>pending</option>
+                                <option value="confirmed" {{ old('status', $booking->status) == 'confirmed' ? 'selected' : '' }}>confirmed</option>
+                                <option value="canceled" {{ old('status', $booking->status) == 'canceled' ? 'selected' : '' }}>canceled</option>
+                            </select>
+                            @error('status')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                            Обновить
+                            Update
                         </button>
                         <a href="{{ route('bookings.index') }}"
-                           class="ml-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Отмена</a>
+                           class="ml-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Cancel</a>
                     </form>
                 </div>
             </div>

@@ -65,13 +65,9 @@ class BookingController extends Controller
     public function update(UpdateBookingRequest $request, Booking $booking): RedirectResponse
     {
         try {
-            $this->bookingService->updateBookingTime(
-                $booking,
-                CarbonImmutable::parse($request->validated()['start_time']),
-                CarbonImmutable::parse($request->validated()['end_time'])
-            );
-            return redirect()->route('bookings.index')->with('success', 'Booking successfully created.');
-        } catch (Exception $e) {
+            $this->bookingService->updateBooking($booking, $request->validated());
+            return redirect()->route('bookings.index')->with('success', 'Booking has been successfully updated.');
+        } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }

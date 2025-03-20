@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateBookingRequest extends FormRequest
 {
@@ -22,8 +23,13 @@ class UpdateBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
+//            'customer_name' => ['required', 'string', 'max:255'],
+//            'customer_phone' => ['required', 'string', 'max:20', 'regex:/^\+?[1-9]\d{1,14}$/'],
+//            'customer_email' => ['required', 'email', 'max:255'],
+//            'room_id' => ['required', 'integer', Rule::exists('rooms', 'id')],
             'start_time' => ['required', 'date', 'after:now'],
             'end_time' => ['required', 'date', 'after:start_time'],
+            'status' => ['required', Rule::in(['pending', 'confirmed', 'canceled'])],
         ];
     }
 }

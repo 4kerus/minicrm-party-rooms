@@ -54,34 +54,42 @@ class BookingService extends BaseService
         });
     }
 
-    public function updateBookingTime(Booking $booking, CarbonImmutable $newStartTime, CarbonImmutable $newEndTime): Booking
+    public function updateBooking(Booking $booking, array $data): Booking
     {
-        return DB::transaction(function () use ($booking, $newStartTime, $newEndTime) {
+        return DB::transaction(function () use ($booking, $data) {
+            $startTime = CarbonImmutable::parse($data['start_time']);
+            $endTime = CarbonImmutable::parse($data['end_time']);
+
             $conflictExists = Booking::query()
                 ->where('room_id', $booking->room_id)
                 ->where('status', '!=', 'canceled')
                 ->where('id', '!=', $booking->id)
-                ->where(function ($query) use ($newStartTime, $newEndTime) {
-                    $query->whereBetween('start_time', [$newStartTime, $newEndTime])
-                        ->orWhereBetween('end_time', [$newStartTime, $newEndTime])
-                        ->orWhere(function ($query) use ($newStartTime, $newEndTime) {
-                            $query->where('start_time', '<=', $newStartTime)
-                                ->where('end_time', '>=', $newEndTime);
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->whereBetween('start_time', [$startTime, $endTime])
+                        ->orWhereBetween('end_time', [$startTime, $endTime])
+                        ->orWhere(function ($query) use ($startTime, $endTime) {
+                            $query->where('start_time', '<=', $startTime)
+                                ->where('end_time', '>=', $endTime);
                         });
                 })
                 ->exists();
 
             if ($conflictExists) {
-                throw new \Exception('Новое время пересекается с существующим бронированием.');
+                throw new \Exception('The new time overlaps with existing bookings.');
             }
 
-            $hours = $newStartTime->diffInHours($newEndTime);
+            $hours = $startTime->diffInHours($endTime);
             $totalPrice = $booking->room->price_per_hour * $hours;
 
             $booking->update([
-                'start_time' => $newStartTime,
-                'end_time' => $newEndTime,
+//                'customer_name' => $data['customer_name'],
+//                'customer_phone' => $data['customer_phone'],
+//                'customer_email' => $data['customer_email'],
+//                'room_id' => $data['room_id'],
+                'start_time' => $startTime,
+                'end_time' => $endTime,
                 'total_price' => $totalPrice,
+                'status' => $data['status'],
             ]);
 
             return $booking->fresh();
