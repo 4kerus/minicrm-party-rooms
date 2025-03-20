@@ -18,6 +18,11 @@ class Booking extends Model
         'status'
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);

@@ -9,18 +9,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard/events', [BookingController::class, 'calendarEvents'])->name('dashboard.events');
 
-Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('rooms', RoomController::class);
+    Route::resource('bookings', BookingController::class);
 });
 
-Route::resource('rooms', RoomController::class);
-Route::resource('bookings', BookingController::class);
-Route::get('bookings/calendar', [BookingController::class, 'calendar'])->name('bookings.calendar');
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

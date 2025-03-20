@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Services\RoomService;
-use App\Http\Requests\RoomRequest;
+use App\Http\Requests\StoreRoomRequest;
 use Exception;
 
 class RoomController extends Controller
@@ -30,15 +30,15 @@ class RoomController extends Controller
         return view('rooms.create');
     }
 
-    public function store(RoomRequest $request): RedirectResponse
+    public function store(StoreRoomRequest $request): RedirectResponse
     {
         try {
             $this->roomService->create($request->validated());
 
-            return redirect()->route('rooms.index')->with('success', 'Комната успешно создана.');
+            return redirect()->route('rooms.index')->with('success', 'The room has been successfully created.');
         } catch (Exception $e) {
 
-            return redirect()->route('rooms.index')->with('error', 'Ошибка при создании комнаты: ' . $e->getMessage());
+            return redirect()->route('rooms.index')->with('error', 'Error when creating a room: ' . $e->getMessage());
         }
     }
 
@@ -52,15 +52,15 @@ class RoomController extends Controller
         return view('rooms.edit', compact('room'));
     }
 
-    public function update(RoomRequest $request, Room $room): RedirectResponse
+    public function update(StoreRoomRequest $request, Room $room): RedirectResponse
     {
         try {
             $this->roomService->update($room, $request->validated());
 
-            return redirect()->route('rooms.index')->with('success', 'Комната успешно обновлена.');
+            return redirect()->route('rooms.index')->with('success', 'The room has been successfully upgraded.');
         } catch (Exception $e) {
 
-            return redirect()->route('rooms.index')->with('error', 'Ошибка при обновлении комнаты: ' . $e->getMessage());
+            return redirect()->route('rooms.index')->with('error', 'Error when updating a room: ' . $e->getMessage());
         }
     }
 
@@ -70,9 +70,10 @@ class RoomController extends Controller
             $this->roomService->delete($room);
         } catch (Exception $e) {
 
-            return redirect()->route('rooms.index')->with('error', 'Ошибка: ' . $e->getMessage());
+            return redirect()->route('rooms.index')->with('error', 'Error when deleting a room: ' . $e->getMessage());
         }
 
-        return redirect()->route('rooms.index')->with('success', 'Комната успешно удалена.');
+        return redirect()->route('rooms.index')->with('success', 'The room has been successfully deleted.');
     }
+
 }
