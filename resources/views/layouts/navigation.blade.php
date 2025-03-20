@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.*')">
+                        {{ __('Rooms') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('bookings.index')" :active="request()->routeIs('bookings.*')">
+                        {{ __('Bookings') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -82,6 +88,12 @@
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.*')">
+                    {{ __('Rooms') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('bookings.index')" :active="request()->routeIs('bookings.*')">
+                    {{ __('Bookings') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
