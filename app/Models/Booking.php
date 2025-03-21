@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Booking extends Model
 {
@@ -23,8 +24,8 @@ class Booking extends Model
         'end_time' => 'datetime',
     ];
 
-    public function room(): BelongsTo
+    public function rooms(): BelongsToMany
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsToMany(Room::class, 'booking_rooms', 'booking_id', 'room_id');
     }
 }

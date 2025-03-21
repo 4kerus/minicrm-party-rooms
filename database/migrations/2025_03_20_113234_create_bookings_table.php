@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('customer_phone');
             $table->string('customer_email');
-            $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->decimal('total_price', 8, 2);

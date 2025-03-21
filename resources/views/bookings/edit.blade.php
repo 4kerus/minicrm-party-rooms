@@ -41,15 +41,26 @@
                             @enderror
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Room</label>
-                            <select name="room_id"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm @error('room_id') border-red-300 @enderror">
+                            <label class="block text-sm font-medium text-gray-700">Rooms</label>
+                            <div class="mt-2 space-y-2 max-h-48 overflow-y-auto border p-2 rounded @error('room_ids') border-red-300 @enderror">
                                 @foreach ($rooms as $room)
-                                    <option
-                                        value="{{ $room->id }}" {{ old('room_id', $booking->room_id) == $room->id ? 'selected' : '' }}>{{ $room->name }}</option>
+                                    <div class="flex items-center">
+                                        <input
+
+                                            type="checkbox"
+                                            name="room_ids[]"
+                                            value="{{ $room->id }}"
+                                            id="room_{{ $room->id }}"
+                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                            {{ in_array($room->id, old('room_ids', $booking->rooms->pluck('id')->toArray())) ? 'checked' : '' }}
+                                        >
+                                        <label for="room_{{ $room->id }}"
+                                               class="ml-2 text-sm text-gray-600">{{ $room->name }}
+                                            ({{$room->price_per_hour}} € / hour)</label>
+                                    </div>
                                 @endforeach
-                            </select>
-                            @error('room_id')
+                            </div>
+                            @error('room_ids')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

@@ -14,7 +14,7 @@
                         <tr>
                             <th class="px-6 py-3">ID</th>
                             <th class="px-6 py-3">Customer</th>
-                            <th class="px-6 py-3">Room</th>
+                            <th class="px-6 py-3">Rooms</th>
                             <th class="px-6 py-3">Start</th>
                             <th class="px-6 py-3">End</th>
                             <th class="px-6 py-3">Cost</th>
@@ -27,7 +27,7 @@
                             <tr>
                                 <td class="px-6 py-4">{{ $booking->id }}</td>
                                 <td class="px-6 py-4">{{ $booking->customer_name }}</td>
-                                <td class="px-6 py-4">{{ $booking->room->name }}</td>
+                                <td class="px-6 py-4">{{ $booking->rooms->pluck('name')->implode(', ') }}</td>
                                 <td class="px-6 py-4">{{ $booking->start_time->format('d.m.Y H:i') }}</td>
                                 <td class="px-6 py-4">{{ $booking->end_time->format('d.m.Y H:i') }}</td>
                                 <td class="px-6 py-4">${{ $booking->total_price }}</td>

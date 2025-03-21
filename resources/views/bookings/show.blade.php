@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Детали бронирования</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Booking details</h2>
     </x-slot>
 
     <div class="py-12">
@@ -12,31 +12,32 @@
                             <strong>ID:</strong> {{ $booking->id }}
                         </div>
                         <div>
-                            <strong>Клиент:</strong> {{ $booking->customer_name }}
+                            <strong>Customer:</strong> {{ $booking->customer_name }}
                         </div>
                         <div>
-                            <strong>Телефон:</strong> {{ $booking->customer_phone }}
+                            <strong>Phone number:</strong> {{ $booking->customer_phone }}
                         </div>
                         <div>
                             <strong>Email:</strong> {{ $booking->customer_email }}
                         </div>
                         <div>
-                            <strong>Комната:</strong> {{ $booking->room->name }}
+                            <strong>Rooms:</strong> {{ $booking->rooms->pluck('name')->implode(', ') }}
                         </div>
                         <div>
-                            <strong>Время начала:</strong> {{ $booking->start_time->format('d.m.Y H:i') }}
+                            <strong>Start time:</strong> {{ $booking->start_time->format('d.m.Y H:i') }}
                         </div>
                         <div>
-                            <strong>Время окончания:</strong> {{ $booking->end_time->format('d.m.Y H:i') }}
+                            <strong>End time:</strong> {{ $booking->end_time->format('d.m.Y H:i') }}
                         </div>
                         <div>
-                            <strong>Стоимость:</strong> ${{ $booking->total_price }}
+                            <strong>Cost:</strong> ${{ $booking->total_price }}
                         </div>
                         <div>
-                            <strong>Статус:</strong> {{ $booking->status }}
+                            <strong>Status:</strong> {{ $booking->status }}
                         </div>
                     </div>
-                    <a href="{{ route('bookings.index') }}" class="mt-6 inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Назад</a>
+                    <a href="{{ route('bookings.edit', $booking) }}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Edit</a>
+                    <a href="{{ route('bookings.index') }}" class="mt-6 inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Cancel</a>
                 </div>
             </div>
         </div>
