@@ -18,7 +18,33 @@ class BookingService extends BaseService
 
     public function getAll(): Collection
     {
-        return $this->model::all();
+        $bookings = $this->model::with('rooms')->get();
+
+        foreach ($bookings as $booking) {
+            $roomCount = $booking->rooms->count();
+
+            if ($roomCount >= 2) {
+                $totalPrice = 0;
+
+                foreach ($booking->rooms as $index => $room) {
+                    $discount = 0;
+
+                    if ($index === 1) {
+                        $discount = 0.10;
+                    } elseif ($index >= 2) {
+                        $discount = 0.20;
+                    }
+
+                    if (isset($room->price_per_hour)) {
+                        $totalPrice += $room->price_per_hour * (1 - $discount);
+                    }
+                }
+
+                $booking->total_price = $totalPrice;
+            }
+        }
+
+        return $bookings;
     }
 
     public function createBooking(array $data): Booking
