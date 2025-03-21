@@ -42,7 +42,7 @@ class BookingController extends Controller
     public function store(StoreBookingRequest $request): RedirectResponse
     {
         try {
-            $this->bookingService->createMultiBooking($request->validated());
+            $this->bookingService->createBooking($request->validated());
 
             return redirect()->route('bookings.index')->with('success', 'Booking successfully created.');
         } catch (\Exception $e) {
@@ -65,7 +65,7 @@ class BookingController extends Controller
     public function update(UpdateBookingRequest $request, Booking $booking): RedirectResponse
     {
         try {
-            $this->bookingService->updateMultiBooking($booking, $request->validated());
+            $this->bookingService->updateBooking($booking, $request->validated());
 
             return redirect()->route('bookings.index')->with('success', 'Booking has been successfully updated.');
         } catch (\Exception $e) {
