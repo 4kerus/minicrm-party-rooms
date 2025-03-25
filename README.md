@@ -49,5 +49,6 @@ docker compose down
 
 ## Дополнительная информация
 - После установки доступ к приложению можно получить по адресу `http://localhost`.
+- Креды для входа в crm `admin@email.com` - `password`
 - Для работы с Artisan используйте `docker compose exec php php artisan <command>`.
 - Для работы с Npm используйте `docker compose run --rm node npm <command>`.
